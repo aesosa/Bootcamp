@@ -1,0 +1,80 @@
+Sub MultiYearStockData():
+'Identify the variables used for code. the variable name and what type of info I need from them (character/numerical)
+'Find the ticker
+    Dim ticker As String
+'Variables for Open and Closing price
+    Dim OP As Double
+    Dim CP As Double
+'What the HW wants me to find as variables: Yearly Change, Percent Change, and the total.
+    Dim yearlych As Double
+    Dim percentch As Double
+'Total stock volume set to 0. Needs to accumulate by adding ever row in each stock.
+    Total = 0
+    Dim stock_row As Long
+    stock_row = 2
+    
+'I need to make a table separate from initial data to show my work.
+    Dim hw_table As Integer
+    hw_table = 2
+    'Starts showing data in row two.
+'Assigning header by calling up cell iow range("Specific Cell").value = "Header name"
+    Range("I1").Value = "Ticker"
+    Range("J1").Value = "Yearly Change"
+    Range("K1").Value = "Percent Change"
+    Range("L1").Value = "Total Stock Volume"
+'Looked up how to define last row from Google
+    lastrow = Cells(Rows.Count, 1).End(xlUp).Row
+    
+    For i = 2 To lastrow:
+        'Conditional format to distinguish one cell from another
+        'If the next cell is not the same as the current cell then
+        If Cells(i + 1, 1).Value <> Cells(i, 1) Then
+            'remember the ticker name and total of the current cell
+            ticker = Cells(i, 1).Value
+            'The new stock volume total is the old 'total' added to the current cell's volume
+            Total = Total + Range("G" & i).Value
+            'print these values in the hw_table
+            Range("I" & hw_table).Value = ticker
+            Range("L" & hw_table).Value = Total
+            
+            'I need to find the yearlych and percentch values.
+            'yearlych value is the closing price - open price
+            'these values are found on f and c columns
+            OP = Range("C" & stock_row).Value
+            CP = Range("F" & stock_row).Value
+            yearlych = CP - OP
+                'Moved percentch up because code is read from top to bottom. Last action done is at the bottom.
+                'Percent shouldn't be 0 because that breaks the math.
+                If OP = 0 Then
+                    percentch = 0
+                Else
+                    percentch = yearlych / OP
+                    
+                End If
+                'Write the new yearlych and percentch in the hw table
+                Range("J" & hw_table).Value = yearlych
+                Range("K" & hw_table).Value = percentch
+                    'Conditional formating for colors green(10) and red (30).
+                    'if the value of percentch cell is positive highlight green
+                    'if the value of percentch cell is negative highlight red
+                    If Range("J" & hw_table).Value > 0 Then
+                        Range("J" & hw_table).Interior.ColorIndex = 10
+                    Else
+                        Range("J" & hw_table).Interior.ColorIndex = 30
+                    End If
+                
+            'I  need more table for the hw_table so i need to add 1
+                hw_table = hw_table + 1
+                stock_row = i + 1
+                
+                Total = 0
+                
+        Else
+            Total = Total + Range("G" & i).Value
+        End If
+    Next i
+    
+
+
+End Sub
+
